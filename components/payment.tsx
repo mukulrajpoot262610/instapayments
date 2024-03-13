@@ -1,11 +1,46 @@
 import { RootState } from '@/global/store';
+import { createOrder } from '@/services/api-service';
+import { RequestData } from '@/types/cart';
 import { Fingerprint, SquareSlashIcon, TruckIcon } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 const Payment = () => {
-  const { paymentMethods } = useSelector((state: RootState) => state.cart);
+  const { paymentMethods, address, summary } = useSelector(
+    (state: RootState) => state.cart
+  );
+
+  const handlePayment = async (method: string) => {
+    if (!address) {
+      return;
+    }
+
+    const payload: RequestData = {
+      customer_details: {
+        customer_id: `CID-${uuidv4()}`,
+        customer_phone: address.mobile,
+        customer_name: address.firstName + ' ' + address.lastName,
+      },
+      order_meta: {
+        return_url: 'https://example.com/return?order_id=myOrderId',
+        notify_url: 'https://example.com/cf_notify',
+        payment_methods: 'upi',
+      },
+      order_id: `OID-${uuidv4()}`,
+      order_amount: parseInt(summary.total.toFixed(2)),
+      order_currency: 'INR',
+      order_note: 'Groww',
+    };
+
+    try {
+      const { data } = await createOrder(payload);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className='bg-white p-6 border'>
@@ -22,6 +57,7 @@ const Payment = () => {
           <div
             key={index}
             className='p-4 text-lg border gap-1 mt-2 font-bold flex items-center justify-between hover:border-black cursor-pointer'
+            onClick={() => handlePayment(pay)}
           >
             {pay}
             {pay === 'UPI' && (

@@ -1,5 +1,5 @@
 import { FormSchema } from '@/components/address';
-import { Product } from '@/types/cart';
+import { Product, Summary } from '@/types/cart';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { z } from 'zod';
 
@@ -8,6 +8,7 @@ interface CartState {
   paymentMethods: string[];
   address: z.infer<typeof FormSchema> | null;
   currentStep: 'shipping' | 'payment' | 'final';
+  summary: Summary;
 }
 
 const initialState: CartState = {
@@ -15,6 +16,12 @@ const initialState: CartState = {
   paymentMethods: [],
   address: null,
   currentStep: 'shipping',
+  summary: {
+    orderAmount: 0,
+    total: 0,
+    deliveryCharges: 0,
+    discountAmount: 0,
+  },
 };
 
 export const cartSlice = createSlice({
@@ -39,6 +46,9 @@ export const cartSlice = createSlice({
     ) => {
       state.currentStep = action.payload;
     },
+    setSummary: (state, action: PayloadAction<Summary>) => {
+      state.summary = action.payload;
+    },
   },
 });
 
@@ -48,6 +58,7 @@ export const {
   addAddress,
   deleteAddress,
   setCurrentStep,
+  setSummary,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

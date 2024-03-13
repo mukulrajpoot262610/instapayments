@@ -5,17 +5,9 @@ import { RootState } from '@/global/store';
 import { PartyPopper } from 'lucide-react';
 
 const OrderDetails = () => {
-  const products = useSelector((state: RootState) => state.cart.cartItems);
-
-  const orderAmount = products.reduce(
-    (total, product) => total + product.price * product.quantity,
-    0
+  const { cartItems: products, summary } = useSelector(
+    (state: RootState) => state.cart
   );
-
-  const deliveryCharges = orderAmount * 0.02;
-
-  const discountAmount = orderAmount * 0.1;
-  const total = orderAmount - discountAmount + deliveryCharges;
 
   return (
     <>
@@ -24,15 +16,15 @@ const OrderDetails = () => {
         <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between text-sm'>
             <p>Order Amount</p>
-            <p>₹{orderAmount.toFixed(2)}</p>
+            <p>₹{summary.orderAmount.toFixed(2)}</p>
           </div>
           <div className='flex items-center justify-between text-sm'>
             <p>Delivery Fee</p>
-            <p>₹{deliveryCharges.toFixed(2)}</p>
+            <p>₹{summary.deliveryCharges.toFixed(2)}</p>
           </div>
           <div className='flex items-center justify-between text-sm'>
             <p>Discount</p>
-            <p>- ₹{discountAmount.toFixed(2)}</p>
+            <p>- ₹{summary.discountAmount.toFixed(2)}</p>
           </div>
           <div className='flex items-center justify-between text-lg font-semibold mt-2'>
             <p className='flex items-start flex-col justify-center'>
@@ -41,7 +33,7 @@ const OrderDetails = () => {
                 (Inclusive of all taxes)
               </span>
             </p>
-            <p>₹{total.toFixed(2)}</p>
+            <p>₹{summary.total.toFixed(2)}</p>
           </div>
         </div>
       </div>
@@ -55,7 +47,7 @@ const OrderDetails = () => {
       <hr className='my-5' />
 
       <div className='hidden lg:flex flex-col gap-3'>
-        {products.map((product, index) => (
+        {products.map((product) => (
           <ItemCard
             key={product.id}
             title={product.title}
