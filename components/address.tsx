@@ -15,10 +15,14 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import { ArrowBigRightDash } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addAddress } from '@/global/cartSlice';
+import toast from 'react-hot-toast';
+import { RootState } from '@/global/store';
+import AddressCard from './address-card';
 
-const FormSchema = z.object({
+export const FormSchema = z.object({
   firstName: z.string().min(2, {
     message: 'First Name must be at least 2 characters.',
   }),
@@ -49,41 +53,85 @@ const FormSchema = z.object({
 });
 
 const Address = () => {
+  const dispatch = useDispatch();
+  const address = useSelector((state: RootState) => state.cart.address);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {},
+    defaultValues: {
+      firstName: 'Mukul',
+      lastName: 'Rajpoot',
+      street: '3A Highland Park',
+      landmark: 'Mohali Citi Square',
+      city: 'Zirakpur',
+      state: 'Punjab',
+      pincode: '140603',
+      country: 'India',
+      mobile: '6392025617',
+    },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    dispatch(addAddress(data));
+    toast.success('Address Added');
   }
 
   return (
     <div className='bg-white p-6 border'>
       <h1 className='uppercase font-bold text-xl mb-4'>ADDRESS</h1>
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className='w-full space-y-2'
-        >
-          <div className='grid grid-cols-1 lg:grid-cols-2 space-y-2 lg:space-y-0 lg:space-x-2'>
+      {!address ? (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='w-full space-y-2'
+          >
+            <div className='grid grid-cols-1 lg:grid-cols-2 space-y-2 lg:space-y-0 lg:space-x-2'>
+              <FormField
+                control={form.control}
+                name='firstName'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-xs'>First Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='First Name'
+                        className='rounded-none'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='text-xs' />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='lastName'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-xs'>Last Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Last Name'
+                        className='rounded-none'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='text-xs' />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
-              name='firstName'
+              name='street'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-xs'>First Name</FormLabel>
+                  <FormLabel className='text-xs'>Street Address</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='First Name'
+                      placeholder='Street Address'
                       className='rounded-none'
                       {...field}
                     />
@@ -92,15 +140,16 @@ const Address = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name='lastName'
+              name='landmark'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-xs'>Last Name</FormLabel>
+                  <FormLabel className='text-xs'>Landmark</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='Last Name'
+                      placeholder='Landmark'
                       className='rounded-none'
                       {...field}
                     />
@@ -109,150 +158,125 @@ const Address = () => {
                 </FormItem>
               )}
             />
-          </div>
 
-          <FormField
-            control={form.control}
-            name='street'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className='text-xs'>Street Address</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='Street Address'
-                    className='rounded-none'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className='text-xs' />
-              </FormItem>
-            )}
-          />
+            <div className='grid grid-cols-1 lg:grid-cols-2 space-y-2 lg:space-y-0 lg:space-x-2'>
+              <FormField
+                control={form.control}
+                name='country'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-xs'>Country</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='First Name'
+                        className='rounded-none'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='text-xs' />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='state'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-xs'>State</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Last Name'
+                        className='rounded-none'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='text-xs' />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-          <FormField
-            control={form.control}
-            name='landmark'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className='text-xs'>Landmark</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='Landmark'
-                    className='rounded-none'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className='text-xs' />
-              </FormItem>
-            )}
-          />
+            <div className='grid grid-cols-1 lg:grid-cols-2 space-y-2 lg:space-y-0 lg:space-x-2'>
+              <FormField
+                control={form.control}
+                name='city'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-xs'>City</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='City'
+                        className='rounded-none'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='text-xs' />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='pincode'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-xs'>Pin Code</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Pin Code'
+                        className='rounded-none'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='text-xs' />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-          <div className='grid grid-cols-1 lg:grid-cols-2 space-y-2 lg:space-y-0 lg:space-x-2'>
             <FormField
               control={form.control}
-              name='country'
+              name='mobile'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-xs'>Country</FormLabel>
+                  <FormLabel className='text-xs'>Mobile Number</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='First Name'
+                      placeholder='Mobile Number'
                       className='rounded-none'
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription className='text-xs'>
+                    We will only call you if there are questions regarding your
+                    order.
+                  </FormDescription>
                   <FormMessage className='text-xs' />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name='state'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-xs'>State</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='Last Name'
-                      className='rounded-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className='text-xs' />
-                </FormItem>
-              )}
-            />
-          </div>
 
-          <div className='grid grid-cols-1 lg:grid-cols-2 space-y-2 lg:space-y-0 lg:space-x-2'>
-            <FormField
-              control={form.control}
-              name='city'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-xs'>City</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='City'
-                      className='rounded-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className='text-xs' />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='pincode'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-xs'>Pin Code</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='Pin Code'
-                      className='rounded-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className='text-xs' />
-                </FormItem>
-              )}
-            />
-          </div>
+            <div className='pt-5'>
+              <Button
+                type='submit'
+                className='w-full lg:w-1/3 flex items-center justify-between'
+              >
+                Save <ArrowBigRightDash className='h-5 w-5' />
+              </Button>
+            </div>
+          </form>
+        </Form>
+      ) : (
+        <div>
+          <AddressCard address={address} />
 
-          <FormField
-            control={form.control}
-            name='mobile'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className='text-xs'>Mobile Number</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='Mobile Number'
-                    className='rounded-none'
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription className='text-xs'>
-                  We will only call you if there are questions regarding your
-                  order.
-                </FormDescription>
-                <FormMessage className='text-xs' />
-              </FormItem>
-            )}
-          />
-
-          <div className='pt-5'>
-            <Button
-              type='submit'
-              className='w-full lg:w-1/3 flex items-center justify-between'
-            >
-              Next <ArrowBigRightDash className='h-5 w-5' />
-            </Button>
-          </div>
-        </form>
-      </Form>
+          <Button
+            type='submit'
+            className='w-full lg:w-1/3 flex items-center justify-between mt-5'
+          >
+            Payment <ArrowBigRightDash className='h-5 w-5' />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

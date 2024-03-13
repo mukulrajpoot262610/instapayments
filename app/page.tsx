@@ -11,10 +11,14 @@ import {
 
 import Address from '@/components/address';
 import OrderDetails from '@/components/order-detail';
-import { CreditCardIcon, ShoppingCartIcon, TruckIcon } from 'lucide-react';
+import { ShoppingCartIcon, TruckIcon } from 'lucide-react';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setPaymentMethods, setProducts } from '@/global/cartSlice';
 
 export default function Home() {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -30,14 +34,15 @@ export default function Home() {
 
         const data = await response.json();
 
-        console.log(data);
+        dispatch(setPaymentMethods(data.paymentMethods));
+        dispatch(setProducts(data.products));
       } catch (err) {
         console.log(err);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [dispatch]);
 
   return (
     <main className='min-h-[calc(100vh-5rem)] max-w-6xl mx-auto p-2 lg:p-6'>

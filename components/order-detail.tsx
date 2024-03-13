@@ -1,32 +1,22 @@
 import React from 'react';
 import ItemCard from './item-card';
-
-const PRODUCTS = [
-  {
-    id: 14,
-    title:
-      'Samsung 49-Inch CHG90 144Hz Curved Gaming Monitor (LC49HG90DMNXZA) – Super Ultrawide Screen QLED',
-    price: 999.99,
-    image: 'https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg',
-    quantity: 8,
-  },
-  {
-    id: 4,
-    title: 'Mens Casual Slim Fit',
-    price: 15.99,
-    image: 'https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg',
-    quantity: 8,
-  },
-  {
-    id: 18,
-    title: "MBJ Women's Solid Short Sleeve Boat Neck V",
-    price: 9.85,
-    image: 'https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_.jpg',
-    quantity: 10,
-  },
-];
+import { useSelector } from 'react-redux';
+import { RootState } from '@/global/store';
+import { PartyPopper } from 'lucide-react';
 
 const OrderDetails = () => {
+  const products = useSelector((state: RootState) => state.cart.cartItems);
+
+  const orderAmount = products.reduce(
+    (total, product) => total + product.price * product.quantity,
+    0
+  );
+
+  const deliveryCharges = orderAmount * 0.02;
+
+  const discountAmount = orderAmount * 0.07;
+  const total = orderAmount - discountAmount + deliveryCharges;
+
   return (
     <>
       <div className='bg-white p-6 border'>
@@ -34,15 +24,15 @@ const OrderDetails = () => {
         <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between text-sm'>
             <p>Order Amount</p>
-            <p>17,490</p>
+            <p>₹{orderAmount.toFixed(2)}</p>
           </div>
           <div className='flex items-center justify-between text-sm'>
             <p>Delivery Fee</p>
-            <p>10</p>
+            <p>₹{deliveryCharges.toFixed(2)}</p>
           </div>
           <div className='flex items-center justify-between text-sm'>
             <p>Discount</p>
-            <p>100</p>
+            <p>- ₹{discountAmount.toFixed(2)}</p>
           </div>
           <div className='flex items-center justify-between text-lg font-semibold mt-2'>
             <p className='flex items-start flex-col justify-center'>
@@ -51,15 +41,20 @@ const OrderDetails = () => {
                 (Inclusive of all taxes)
               </span>
             </p>
-            <p>100</p>
+            <p>₹{total.toFixed(2)}</p>
           </div>
         </div>
+      </div>
+
+      <div className='p-4 bg-green-50 text-green-700 border border-green-500 flex items-center gap-1 mt-2 text-xs'>
+        <PartyPopper className='h-4 w-4 mr-1' />
+        Discount of <span className='font-bold'>8% Applied</span> for new users.
       </div>
 
       <hr className='my-5' />
 
       <div className='hidden lg:flex flex-col gap-3'>
-        {PRODUCTS.map((product, index) => (
+        {products.map((product, index) => (
           <ItemCard
             key={product.id}
             title={product.title}
