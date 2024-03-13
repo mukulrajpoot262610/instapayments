@@ -17,7 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { ArrowBigRightDash } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAddress } from '@/global/cartSlice';
+import { addAddress, setCurrentStep } from '@/global/cartSlice';
 import toast from 'react-hot-toast';
 import { RootState } from '@/global/store';
 import AddressCard from './address-card';
@@ -260,7 +260,7 @@ const Address = () => {
                 type='submit'
                 className='w-full lg:w-1/3 flex items-center justify-between'
               >
-                Save <ArrowBigRightDash className='h-5 w-5' />
+                Proceed <ArrowBigRightDash className='h-5 w-5' />
               </Button>
             </div>
           </form>
@@ -270,10 +270,10 @@ const Address = () => {
           <AddressCard address={address} />
 
           <Button
-            type='submit'
+            onClick={() => dispatch(setCurrentStep('payment'))}
             className='w-full lg:w-1/3 flex items-center justify-between mt-5'
           >
-            Payment <ArrowBigRightDash className='h-5 w-5' />
+            Click to Payment <ArrowBigRightDash className='h-5 w-5' />
           </Button>
         </div>
       )}

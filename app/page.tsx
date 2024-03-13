@@ -11,13 +11,18 @@ import {
 
 import Address from '@/components/address';
 import OrderDetails from '@/components/order-detail';
-import { ShoppingCartIcon, TruckIcon } from 'lucide-react';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { CreditCard, ShoppingCartIcon, TruckIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { setPaymentMethods, setProducts } from '@/global/cartSlice';
+import { RootState } from '@/global/store';
+import Payment from '@/components/payment';
 
 export default function Home() {
   const dispatch = useDispatch();
+  const { currentStep, cartItems } = useSelector(
+    (state: RootState) => state.cart
+  );
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -54,21 +59,46 @@ export default function Home() {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage className='flex items-center gap-1'>
-              <TruckIcon className='h-4 w-4' />
-              Checkout
-            </BreadcrumbPage>
-          </BreadcrumbItem>
+          {currentStep === 'shipping' && (
+            <BreadcrumbItem>
+              <BreadcrumbPage className='flex items-center gap-1 capitalize'>
+                <TruckIcon className='h-4 w-4' />
+                Shipping
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          )}
+          {currentStep === 'payment' && (
+            <>
+              <BreadcrumbItem>
+                <BreadcrumbLink className='flex items-center gap-1 capitalize'>
+                  <TruckIcon className='h-4 w-4' />
+                  Shipping
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className='flex items-center gap-1 capitalize'>
+                  <CreditCard className='h-4 w-4' />
+                  Payment
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
+          )}
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h1 className='mt-10 text-center font-bold text-3xl'>CHECKOUT</h1>
-      <p className='text-center text-sm text-gray-500'>(2 items) ₹17,498.50</p>
+      <h1 className='mt-10 text-center font-bold text-3xl uppercase'>
+        {currentStep}
+      </h1>
+      <p className='text-center text-sm text-gray-500'>
+        ({cartItems.length} items) ₹
+        {cartItems.reduce((a, b) => a + b.price * b.quantity, 0)}
+      </p>
 
       <div className='grid grid-cols-12 gap-4 mt-10'>
         <div className='col-span-12 lg:col-span-8'>
-          <Address />
+          {currentStep === 'shipping' && <Address />}
+          {currentStep === 'payment' && <Payment />}
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <OrderDetails />

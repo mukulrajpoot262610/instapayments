@@ -14,7 +14,7 @@ const OrderDetails = () => {
 
   const deliveryCharges = orderAmount * 0.02;
 
-  const discountAmount = orderAmount * 0.07;
+  const discountAmount = orderAmount * 0.1;
   const total = orderAmount - discountAmount + deliveryCharges;
 
   return (
@@ -48,7 +48,8 @@ const OrderDetails = () => {
 
       <div className='p-4 bg-green-50 text-green-700 border border-green-500 flex items-center gap-1 mt-2 text-xs'>
         <PartyPopper className='h-4 w-4 mr-1' />
-        Discount of <span className='font-bold'>8% Applied</span> for new users.
+        Discount of <span className='font-bold'>10% Applied</span> for new
+        users.
       </div>
 
       <hr className='my-5' />

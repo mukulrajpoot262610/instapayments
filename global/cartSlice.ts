@@ -1,18 +1,20 @@
 import { FormSchema } from '@/components/address';
-import { PaymentMethods, Product } from '@/types/cart';
+import { Product } from '@/types/cart';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { z } from 'zod';
 
 interface CartState {
   cartItems: Product[];
-  paymentMethods: PaymentMethods[];
+  paymentMethods: string[];
   address: z.infer<typeof FormSchema> | null;
+  currentStep: 'shipping' | 'payment' | 'final';
 }
 
 const initialState: CartState = {
   cartItems: [],
   paymentMethods: [],
   address: null,
+  currentStep: 'shipping',
 };
 
 export const cartSlice = createSlice({
@@ -22,7 +24,7 @@ export const cartSlice = createSlice({
     setProducts: (state, action: PayloadAction<Product[]>) => {
       state.cartItems = action.payload;
     },
-    setPaymentMethods: (state, action: PayloadAction<PaymentMethods[]>) => {
+    setPaymentMethods: (state, action: PayloadAction<string[]>) => {
       state.paymentMethods = action.payload;
     },
     addAddress: (state, action: PayloadAction<z.infer<typeof FormSchema>>) => {
@@ -31,10 +33,21 @@ export const cartSlice = createSlice({
     deleteAddress: (state) => {
       state.address = null;
     },
+    setCurrentStep: (
+      state,
+      action: PayloadAction<'shipping' | 'payment' | 'final'>
+    ) => {
+      state.currentStep = action.payload;
+    },
   },
 });
 
-export const { setProducts, setPaymentMethods, addAddress, deleteAddress } =
-  cartSlice.actions;
+export const {
+  setProducts,
+  setPaymentMethods,
+  addAddress,
+  deleteAddress,
+  setCurrentStep,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

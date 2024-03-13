@@ -5,7 +5,3 @@ export interface Product {
   image: string;
   quantity: number;
 }
-export interface PaymentMethods {
-  UPI: boolean;
-  CARDS: boolean;
-}
