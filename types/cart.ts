@@ -1,3 +1,6 @@
+import { FormSchema } from '@/components/address';
+import { z } from 'zod';
+
 export interface Product {
   id: number;
   title: string;
@@ -32,4 +35,9 @@ export interface Summary {
   deliveryCharges: number;
   discountAmount: number;
   total: number;
+}
+
+export interface PaymentApiPayload {
+  address: z.infer<typeof FormSchema>;
+  summary: Summary;
 }

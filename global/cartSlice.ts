@@ -9,6 +9,7 @@ interface CartState {
   address: z.infer<typeof FormSchema> | null;
   currentStep: 'shipping' | 'payment' | 'final';
   summary: Summary;
+  selectedMethod: 'upi' | 'card' | 'cod' | null;
 }
 
 const initialState: CartState = {
@@ -22,6 +23,7 @@ const initialState: CartState = {
     deliveryCharges: 0,
     discountAmount: 0,
   },
+  selectedMethod: null,
 };
 
 export const cartSlice = createSlice({
@@ -49,6 +51,12 @@ export const cartSlice = createSlice({
     setSummary: (state, action: PayloadAction<Summary>) => {
       state.summary = action.payload;
     },
+    setPaymentMethod: (
+      state,
+      action: PayloadAction<'upi' | 'card' | 'cod'>
+    ) => {
+      state.selectedMethod = action.payload;
+    },
   },
 });
 
@@ -59,6 +67,7 @@ export const {
   deleteAddress,
   setCurrentStep,
   setSummary,
+  setPaymentMethod,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
