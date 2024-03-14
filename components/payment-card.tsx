@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -16,9 +16,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { LockIcon } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { Loader, Loader2, LockIcon } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/global/store';
+import { checkStatus, getSession, makePayment } from '@/services/api-service';
+import { PaymentApiPayload } from '@/types/cashfree';
+import { setCurrentStep, setOrder, setOrderStatus } from '@/global/cartSlice';
+import toast from 'react-hot-toast';
 
 const CardSchema = z.object({
   name: z.string().min(2, {
@@ -36,17 +40,82 @@ const CardSchema = z.object({
 });
 
 const CardPayment = () => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof CardSchema>>({
     resolver: zodResolver(CardSchema),
     defaultValues: {},
   });
 
-  function onSubmit(data: z.infer<typeof CardSchema>) {}
+  const { address, summary } = useSelector((state: RootState) => state.cart);
+
+  const handlePayment = async (cardData: z.infer<typeof CardSchema>) => {
+    if (!address) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data } = await getSession({
+        address,
+        summary,
+        selectedMethod: 'cc, dc',
+      });
+
+      const payload: PaymentApiPayload = {
+        payment_session_id: data.paymentSessionId,
+        method: 'card',
+        card_cvv: cardData.cvv,
+        card_expiry_mm: cardData.expiryDate.split('/')[0],
+        card_expiry_yy: cardData.expiryDate.split('/')[1],
+        card_number: cardData.cardNumber,
+        card_holder_name: cardData.name,
+        channel: 'link',
+      };
+
+      const { data: paymentData } = await makePayment(payload);
+      window.open(paymentData.data.data.url);
+
+      const pollStatus = async () => {
+        try {
+          const { data: statusData } = await checkStatus(data.orderId!);
+          console.log(statusData);
+          if (statusData.data.order_status !== 'PAID') {
+            setTimeout(pollStatus, 5000);
+          } else {
+            dispatch(setOrderStatus('success'));
+            setLoading(false);
+            dispatch(setCurrentStep(4));
+            dispatch(setOrder(statusData.data));
+          }
+        } catch (err) {
+          console.log('Error while polling status:', err);
+        }
+      };
+
+      setTimeout(pollStatus, 5000);
+    } catch (err) {
+      console.log(err);
+      toast.error('Internal Server Error');
+      setLoading(false);
+    }
+  };
 
   const { selectedMethod } = useSelector((state: RootState) => state.cart);
 
   return (
-    <div>
+    <div className='relative p-4'>
+      {loading && (
+        <div className='h-full w-full absolute top-0 left-0 bg-black/[0.5] text-white flex flex-col items-center justify-center'>
+          <Loader2 className='animate-spin' />
+          <p className='mt-2 font-normal'>Processing</p>
+          <p className='text-xs font-normal'>
+            Please do not refresh or press back.
+          </p>
+        </div>
+      )}
+
       <div className='flex items-center justify-between'>
         CARDS
         <div className='flex items-center gap-1'>
@@ -77,7 +146,7 @@ const CardPayment = () => {
         <div className='text-sm font-normal mt-3'>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(handlePayment)}
               className='w-full space-y-2'
             >
               <FormField
@@ -163,7 +232,8 @@ const CardPayment = () => {
               </div>
 
               <div className='pt-5'>
-                <Button type='submit' className='w-full'>
+                <Button type='submit' className='w-full' disabled={loading}>
+                  {loading && <Loader className='h-4 w-4 mr-3 animate-spin' />}
                   Pay Now <LockIcon className='h-4 w-4 ml-3' />
                 </Button>
               </div>

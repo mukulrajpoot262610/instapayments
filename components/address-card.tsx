@@ -8,9 +8,10 @@ import { deleteAddress } from '@/global/cartSlice';
 
 interface AddressCardProps {
   address: z.infer<typeof FormSchema>;
+  isDelete: boolean;
 }
 
-const AddressCard = ({ address }: AddressCardProps) => {
+const AddressCard = ({ address, isDelete }: AddressCardProps) => {
   const dispatch = useDispatch();
 
   const handleDelete = () => {
@@ -23,9 +24,11 @@ const AddressCard = ({ address }: AddressCardProps) => {
         <h1 className='font-bold mb-3'>
           {address.firstName} {address.lastName}
         </h1>
-        <Button variant='ghost' size='sm' onClick={handleDelete}>
-          <Trash2 className='h-4 w-4' />
-        </Button>
+        {isDelete && (
+          <Button variant='ghost' size='sm' onClick={handleDelete}>
+            <Trash2 className='h-4 w-4' />
+          </Button>
+        )}
       </div>
 
       <p className='text-sm font-light'>{address.street}</p>

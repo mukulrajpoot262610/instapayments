@@ -10,6 +10,8 @@ interface CartState {
   currentStep: number;
   summary: Summary;
   selectedMethod: 'upi' | 'card' | 'cod' | null;
+  orderStatus: 'success' | 'failure' | 'pending' | null;
+  order: any;
 }
 
 const initialState: CartState = {
@@ -24,6 +26,8 @@ const initialState: CartState = {
     discountAmount: 0,
   },
   selectedMethod: null,
+  orderStatus: null,
+  order: null,
 };
 
 export const cartSlice = createSlice({
@@ -54,6 +58,15 @@ export const cartSlice = createSlice({
     ) => {
       state.selectedMethod = action.payload;
     },
+    setOrderStatus: (
+      state,
+      action: PayloadAction<'success' | 'failure' | 'pending'>
+    ) => {
+      state.orderStatus = action.payload;
+    },
+    setOrder: (state, action: PayloadAction<any>) => {
+      state.order = action.payload;
+    },
   },
 });
 
@@ -65,6 +78,8 @@ export const {
   setCurrentStep,
   setSummary,
   setPaymentMethod,
+  setOrderStatus,
+  setOrder,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

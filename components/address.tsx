@@ -267,7 +267,7 @@ const Address = () => {
         </Form>
       ) : (
         <div>
-          <AddressCard address={address} />
+          <AddressCard address={address} isDelete={true} />
 
           <Button
             onClick={() => dispatch(setCurrentStep(3))}

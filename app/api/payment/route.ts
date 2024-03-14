@@ -1,9 +1,8 @@
 'use server';
 
-import { PaymentApiPayload, RequestData } from '@/types/cart';
+import { PaymentApiPayload, PaymentApiRequestData } from '@/types/cashfree';
 import axios from 'axios';
 import { NextResponse } from 'next/server';
-import { v4 as uuidv4 } from 'uuid';
 
 const {
   NEXT_PUBLIC_CF_CLIENT_ID,
@@ -16,7 +15,17 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { address, summary }: PaymentApiPayload = await req.json();
+  const {
+    payment_session_id,
+    channel,
+    card_cvv,
+    card_expiry_mm,
+    card_expiry_yy,
+    card_number,
+    card_holder_name,
+    upi_id,
+    method,
+  }: PaymentApiPayload = await req.json();
 
   try {
     if (
@@ -27,22 +36,45 @@ export async function POST(req: Request) {
       throw new Error('Keys not found');
     }
 
-    const payload: RequestData = {
-      customer_details: {
-        customer_id: `CID-${uuidv4()}`,
-        customer_phone: address.mobile,
-        customer_name: address.firstName + ' ' + address.lastName,
-      },
-      order_meta: {
-        return_url: 'https://example.com/return?order_id=myOrderId',
-        notify_url: 'https://example.com/cf_notify',
-        payment_methods: 'upi',
-      },
-      order_id: `OID-${uuidv4()}`,
-      order_amount: parseInt(summary.total.toFixed(2)),
-      order_currency: 'INR',
-      order_note: 'Groww',
-    };
+    let payload: PaymentApiRequestData;
+
+    if (method === 'card') {
+      payload = {
+        payment_session_id,
+        payment_method: {
+          card: {
+            channel: 'link',
+            card_number: card_number!,
+            card_holder_name: card_holder_name!,
+            card_expiry_mm: card_expiry_mm!,
+            card_expiry_yy: card_expiry_yy!,
+            card_cvv: card_cvv!,
+          },
+        },
+        save_instrument: true,
+      };
+    } else {
+      if (channel === 'collect') {
+        payload = {
+          payment_session_id,
+          payment_method: {
+            upi: {
+              channel: 'collect',
+              upi_id,
+            },
+          },
+        };
+      } else {
+        payload = {
+          payment_session_id,
+          payment_method: {
+            upi: {
+              channel: 'qrcode',
+            },
+          },
+        };
+      }
+    }
 
     const headers = {
       accept: 'application/json',
@@ -53,14 +85,14 @@ export async function POST(req: Request) {
     };
 
     const { data } = await axios.post(
-      `${NEXT_PUBLIC_CF_BASE_ENDPOINT}/pg/orders`,
+      `${NEXT_PUBLIC_CF_BASE_ENDPOINT}/pg/orders/sessions`,
       payload,
       {
         headers,
       }
     );
 
-    return NextResponse.json({ paymentSessionId: data.payment_session_id });
+    return NextResponse.json({ data });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ err }, { status: 500 });

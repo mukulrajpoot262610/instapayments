@@ -1,4 +1,4 @@
-import { PaymentApiPayload } from '@/types/cart';
+import { PaymentApiPayload, SessionApiPayload } from '@/types/cashfree';
 import axios from 'axios';
 
 const api = axios.create({
@@ -8,7 +8,12 @@ const api = axios.create({
   },
 });
 
+export const getSession = (data: SessionApiPayload) =>
+  api.post('/api/session', data);
+
 export const makePayment = (data: PaymentApiPayload) =>
   api.post('/api/payment', data);
+
+export const checkStatus = (id: string) => api.post(`/api/check/${id}`);
 
 export default api;
