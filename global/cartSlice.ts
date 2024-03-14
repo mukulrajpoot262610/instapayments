@@ -7,7 +7,7 @@ interface CartState {
   cartItems: Product[];
   paymentMethods: string[];
   address: z.infer<typeof FormSchema> | null;
-  currentStep: 'shipping' | 'payment' | 'final';
+  currentStep: number;
   summary: Summary;
   selectedMethod: 'upi' | 'card' | 'cod' | null;
 }
@@ -16,7 +16,7 @@ const initialState: CartState = {
   cartItems: [],
   paymentMethods: [],
   address: null,
-  currentStep: 'shipping',
+  currentStep: 2,
   summary: {
     orderAmount: 0,
     total: 0,
@@ -42,10 +42,7 @@ export const cartSlice = createSlice({
     deleteAddress: (state) => {
       state.address = null;
     },
-    setCurrentStep: (
-      state,
-      action: PayloadAction<'shipping' | 'payment' | 'final'>
-    ) => {
+    setCurrentStep: (state, action: PayloadAction<number>) => {
       state.currentStep = action.payload;
     },
     setSummary: (state, action: PayloadAction<Summary>) => {

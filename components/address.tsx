@@ -270,7 +270,7 @@ const Address = () => {
           <AddressCard address={address} />
 
           <Button
-            onClick={() => dispatch(setCurrentStep('payment'))}
+            onClick={() => dispatch(setCurrentStep(3))}
             className='w-full lg:w-1/3 flex items-center justify-between mt-5'
           >
             Click to Payment <ArrowBigRightDash className='h-5 w-5' />

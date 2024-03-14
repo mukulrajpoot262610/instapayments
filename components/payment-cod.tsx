@@ -1,4 +1,4 @@
-import { setPaymentMethod } from '@/global/cartSlice';
+import { setCurrentStep, setPaymentMethod } from '@/global/cartSlice';
 import { RootState } from '@/global/store';
 import { TruckIcon } from 'lucide-react';
 import React from 'react';
@@ -25,7 +25,11 @@ const PaymentCod = () => {
       </div>
       {selectedMethod === 'cod' && (
         <div>
-          <Button type='submit' className='w-full mt-4'>
+          <Button
+            type='submit'
+            className='w-full mt-4'
+            onClick={() => dispatch(setCurrentStep(4))}
+          >
             Order Now
           </Button>
         </div>

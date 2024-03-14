@@ -41,7 +41,7 @@ const UPIPayment = () => {
 
             <TabsContent value='vpa'>
               <Label className='text-xs mb-1'>Virtual Payment Address</Label>
-              <Input placeholder='shadcn' className='my-1' />
+              <Input placeholder='mukulrajpoot@oksbi' className='my-1' />
 
               <Button type='submit' className='w-full mt-4'>
                 Continue
