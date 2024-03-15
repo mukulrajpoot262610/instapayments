@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from './ui/input';
@@ -12,6 +12,9 @@ import { PaymentApiPayload } from '@/types/cashfree';
 import { Loader, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { setCurrentStep, setOrder, setOrderStatus } from '@/global/cartSlice';
+import UpiCard from './common/upi-card';
+import UpiPaymentVpa from './payment-upi-vpa';
+import UpiPaymentQr from './payment-upi-qr';
 
 const UPIPayment = () => {
   const dispatch = useDispatch();
@@ -22,6 +25,16 @@ const UPIPayment = () => {
   const [upiId, setUpiId] = useState<string>('');
   const [qr, setQr] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = useState(300);
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [loading]);
 
   const handlePayment = async (channel: string) => {
     if (!address) {
@@ -84,91 +97,58 @@ const UPIPayment = () => {
     }
   };
 
-  console.log(qr);
-
   return (
-    <div className='p-4'>
-      <div className='flex items-center justify-between'>
-        UPI
-        <Image
-          src='/upi.svg'
-          height={100}
-          width={100}
-          alt='UPI'
-          className='h-auto w-16 mr-1'
-        />
-      </div>
-
-      {selectedMethod === 'upi' && (
-        <div className='text-sm font-normal mt-3'>
-          <p className='mb-2'>
-            Make a selection on how you would like to use UPI.
+    <div className='relative'>
+      {loading && (
+        <div className='h-full w-full absolute top-0 left-0 bg-black/[0.8] text-white flex flex-col items-center justify-center z-50'>
+          <Loader2 className='animate-spin' />
+          <p className='mt-2 font-normal'>Waiting for Payment</p>
+          <p className='text-xs font-normal'>
+            Please do not refresh or press back.
           </p>
-          <Tabs defaultValue='vpa'>
-            <TabsList className='w-full'>
-              <TabsTrigger className='w-1/2' value='vpa'>
-                VPA
-              </TabsTrigger>
-              <TabsTrigger
-                className='w-1/2'
-                value='qr'
-                onClick={() => handlePayment('qrcode')}
-              >
-                QR Code
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value='vpa'>
-              <Label className='text-xs mb-1'>Virtual Payment Address</Label>
-              <Input
-                value={upiId}
-                onChange={(e) => setUpiId(e.target.value)}
-                placeholder='mukulrajpoot@oksbi'
-                className='my-1'
-              />
-
-              <Button
-                type='submit'
-                className='w-full mt-4'
-                onClick={() => handlePayment('collect')}
-              >
-                Continue
-              </Button>
-            </TabsContent>
-
-            <TabsContent
-              value='qr'
-              className='flex items-center flex-col justify-center border rounded-lg'
-            >
-              <Image
-                src='/upi.svg'
-                height={100}
-                width={100}
-                alt='UPI'
-                className='h-auto w-16 my-10'
-              />
-              <p className='text-center mb-5 px-4'>
-                Scan the QR code using your preferred UPI app to complete the
-                payment
-              </p>
-              {!loading ? (
-                <>
-                  {qr && <img src={qr} className='h-40 w-40' />}
-
-                  {qr && (
-                    <p className='flex items-center my-6 text-xl'>
-                      <Loader2 className='mr-2 h-6 w-6 animate-spin' />
-                      Waiting for payment
-                    </p>
-                  )}
-                </>
-              ) : (
-                <Loader className='animate-spin mb-10' />
-              )}
-            </TabsContent>
-          </Tabs>
+          <p className='mt-4'>
+            Waiting: {Math.floor(timeLeft / 60)}:
+            {(timeLeft % 60).toString().padStart(2, '0')}
+          </p>
         </div>
       )}
+
+      <div className='p-4 border hover:border-black'>
+        <UpiCard />
+
+        {selectedMethod === 'upi' && (
+          <div className='text-sm font-normal mt-3'>
+            <p className='mb-2'>
+              Make a selection on how you would like to use UPI.
+            </p>
+            <Tabs defaultValue='vpa'>
+              <TabsList className='w-full'>
+                <TabsTrigger className='w-1/2' value='vpa'>
+                  VPA
+                </TabsTrigger>
+                <TabsTrigger
+                  className='w-1/2'
+                  value='qr'
+                  onClick={() => handlePayment('qrcode')}
+                >
+                  QR Code
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value='vpa'>
+                <UpiPaymentVpa setLoading={setLoading} />
+              </TabsContent>
+
+              <TabsContent
+                value='qr'
+                className='flex items-center flex-col justify-center border rounded-lg'
+              >
+                <UpiPaymentQr loading={loading} qr={qr} />
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

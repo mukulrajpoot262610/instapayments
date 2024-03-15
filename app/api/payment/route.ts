@@ -93,8 +93,11 @@ export async function POST(req: Request) {
     );
 
     return NextResponse.json({ data });
-  } catch (err) {
-    console.log(err);
-    return NextResponse.json({ err }, { status: 500 });
+  } catch (err: any) {
+    console.log(err.response.data.message);
+    return NextResponse.json(
+      { msg: err.response.data.message },
+      { status: 500 }
+    );
   }
 }

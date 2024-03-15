@@ -17,7 +17,7 @@ const PaymentOptions = () => {
       {paymentMethods.map((pay, index) => (
         <div
           key={index}
-          className='text-lg border gap-1 mt-2 font-bold hover:border-black cursor-pointer'
+          className='text-lg gap-1 mt-2 font-bold cursor-pointer'
           onClick={() =>
             dispatch(
               setPaymentMethod(
