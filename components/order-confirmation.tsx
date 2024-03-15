@@ -17,8 +17,8 @@ const OrderConfirmation = () => {
 
       <p>
         We received your order{' '}
-        <span className='underline font-semibold'>{order[0].order_id}</span> and
-        it is in process.
+        <span className='underline font-semibold'>{order[0]?.order_id}</span>{' '}
+        and it is in process.
       </p>
 
       <p className='mt-3'>
