@@ -69,4 +69,9 @@ Technologies used in the project:
 | ----------- | ----------------- | ----------- | ------- | ----------- |
 | Mukul       | 4706131211212123  | 03/28       | 123     | Visa        |
 | Mukul       | 5409162669381034  | 03/28       | 123     | Master Card |
-| Mukul       | 6074825972083818  | 03/28       | 123     | RuPay |
+| Mukul       | 6074825972083818  | 03/28       | 123     | RuPay       |
+
+
+## Deployment
+
+Project is deployed on Vercel. Open <a href="https://instapayments-mukul.vercel.app">**https://instapayments-mukul.vercel.app**</a> with your browser to see the result.
