@@ -36,6 +36,11 @@ pnpm dev
 bun dev
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+<h2>How to get env variables</h2>
+
+- Go to Cashfree Payments and generate test id `NEXT_PUBLIC_CF_CLIENT_ID`, secret key `NEXT_PUBLIC_CF_SECRET_KEY` and base url `NEXT_PUBLIC_CF_BASE_ENDPOINT`.
+
   
 <h2>💻 Built with</h2>
 
