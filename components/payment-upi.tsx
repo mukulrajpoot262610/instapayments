@@ -127,7 +127,7 @@ const UPIPayment = () => {
         </div>
       )}
 
-      <div className='p-4 border hover:border-black'>
+      <div className='p-4 border hover:border-foreground'>
         <UpiCard />
 
         {selectedMethod === 'upi' && (

@@ -11,7 +11,7 @@ const PaymentCod = () => {
   const { selectedMethod } = useSelector((state: RootState) => state.cart);
 
   return (
-    <div className='p-4 text-lg border gap-1 mt-2 font-bold  hover:border-black cursor-pointer'>
+    <div className='p-4 text-lg border gap-1 mt-2 font-bold  hover:border-foreground cursor-pointer'>
       <div onClick={() => dispatch(setPaymentMethod('cod'))}>
         <CodCard />
       </div>

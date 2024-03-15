@@ -9,7 +9,7 @@ interface ItemCardProps {
 
 const ItemCard = ({ image, title, quantity, price }: ItemCardProps) => {
   return (
-    <div className='flex gap-2 bg-white border'>
+    <div className='flex gap-2 bg-background border'>
       <div className='w-32'>
         <img src={image} className='h-32 w-32 p-6' alt={title} />
       </div>

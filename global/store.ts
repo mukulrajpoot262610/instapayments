@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import cartSlice from './cartSlice';
+import merchantSlice from './merchantSlice';
 
 // Combine reducers
 const rootReducer = {
   cart: cartSlice,
+  merchant: merchantSlice,
 };
 
 // Define the store type

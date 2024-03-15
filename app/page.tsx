@@ -10,6 +10,8 @@ import Payment from '@/components/payment';
 import { Product } from '@/types/cart';
 import OrderConfirmation from '@/components/order-confirmation';
 import axios from 'axios';
+import { MerchantData } from '@/types/merchant';
+import { setMerchantData } from '@/global/merchantSlice';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -52,6 +54,24 @@ export default function Home() {
     };
 
     fetchProducts();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const fetchMerchantData = async () => {
+      try {
+        const response = await axios.get(
+          'https://groww-intern-assignment.vercel.app/v1/api/merchant-metadata'
+        );
+
+        const data: MerchantData = await response.data;
+
+        dispatch(setMerchantData(data));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchMerchantData();
   }, [dispatch]);
 
   return (

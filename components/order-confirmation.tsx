@@ -12,7 +12,7 @@ const OrderConfirmation = () => {
   );
 
   return (
-    <div className='bg-white p-6 border'>
+    <div className='bg-background p-6 border'>
       <h1 className='uppercase font-bold text-2xl mb-4'>
         ThankYou, <br /> Your order has been placed
       </h1>
@@ -46,17 +46,17 @@ const OrderConfirmation = () => {
         <div>
           <h3 className='font-semibold mb-2 mt-4'>Payment Method</h3>
           {selectedMethod === 'card' && (
-            <div className='border border-black p-4'>
+            <div className='border border-foreground p-4'>
               <Card />
             </div>
           )}
           {selectedMethod === 'upi' && (
-            <div className='border border-black p-4'>
+            <div className='border border-foreground p-4'>
               <UpiCard />
             </div>
           )}
           {selectedMethod === 'cod' && (
-            <div className='border border-black p-4'>
+            <div className='border border-foreground p-4'>
               <CodCard />
             </div>
           )}

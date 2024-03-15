@@ -11,7 +11,7 @@ const OrderDetails = () => {
 
   return (
     <>
-      <div className='bg-white p-6 border'>
+      <div className='bg-background p-6 border'>
         <h1 className='uppercase font-bold text-xl mb-4'>Order Summary</h1>
         <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between text-sm'>

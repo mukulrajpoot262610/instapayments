@@ -24,7 +24,7 @@ const CardPayment = () => {
   }, [loading]);
 
   return (
-    <div className='relative p-4 border hover:border-black'>
+    <div className='relative p-4 border hover:border-foreground'>
       {loading && (
         <div className='h-screen w-full fixed top-0 left-0 bg-black/[0.8] text-white flex flex-col items-center justify-center z-50'>
           {orderStatus === 'failure' ? (

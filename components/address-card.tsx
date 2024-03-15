@@ -19,7 +19,7 @@ const AddressCard = ({ address, isDelete }: AddressCardProps) => {
   };
 
   return (
-    <div className='border p-4 border-black'>
+    <div className='border p-4 border-foreground'>
       <div className='flex items-center justify-between'>
         <h1 className='font-bold mb-3'>
           {address.firstName} {address.lastName}
