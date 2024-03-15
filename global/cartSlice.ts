@@ -1,4 +1,4 @@
-import { FormSchema } from '@/components/address';
+import { FormSchema } from '@/schema/address-form';
 import { Product, Summary } from '@/types/cart';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { z } from 'zod';
