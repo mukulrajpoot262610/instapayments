@@ -1,4 +1,4 @@
-import { FormSchema } from '@/components/address';
+import { FormSchema } from '@/schema/address-form';
 import { CustomerDetails, OrderMeta, Summary } from './cart';
 import { z } from 'zod';
 
