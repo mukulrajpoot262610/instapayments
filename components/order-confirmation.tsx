@@ -2,7 +2,9 @@ import { RootState } from '@/global/store';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import AddressCard from './address-card';
-import Image from 'next/image';
+import Card from './common/card-card';
+import UpiCard from './common/upi-card';
+import CodCard from './common/cod-card';
 
 const OrderConfirmation = () => {
   const { address, selectedMethod, order } = useSelector(
@@ -17,7 +19,9 @@ const OrderConfirmation = () => {
 
       <p>
         We received your order{' '}
-        <span className='underline font-semibold'>{order[0]?.order_id}</span>{' '}
+        <span className='underline font-semibold'>
+          {order && order[0]?.order_id}
+        </span>{' '}
         and it is in process.
       </p>
 
@@ -42,43 +46,18 @@ const OrderConfirmation = () => {
         <div>
           <h3 className='font-semibold mb-2 mt-4'>Payment Method</h3>
           {selectedMethod === 'card' && (
-            <div className='flex items-center justify-between border p-4 border-black font-bold'>
-              CARD
-              <div className='flex items-center gap-1'>
-                <Image
-                  src='/master-card.svg'
-                  height={100}
-                  width={100}
-                  alt='UPI'
-                  className='h-auto w-8 mr-1'
-                />
-                <Image
-                  src='/visa.svg'
-                  height={100}
-                  width={100}
-                  alt='UPI'
-                  className='h-auto w-10 mr-1'
-                />
-                <Image
-                  src='/rupay.svg'
-                  height={100}
-                  width={100}
-                  alt='UPI'
-                  className='h-auto w-16 mr-1'
-                />
-              </div>
+            <div className='border border-black p-4'>
+              <Card />
             </div>
           )}
           {selectedMethod === 'upi' && (
-            <div className='flex items-center justify-between border border-black p-4'>
-              UPI
-              <Image
-                src='/upi.svg'
-                height={100}
-                width={100}
-                alt='UPI'
-                className='h-auto w-16 mr-1'
-              />
+            <div className='border border-black p-4'>
+              <UpiCard />
+            </div>
+          )}
+          {selectedMethod === 'cod' && (
+            <div className='border border-black p-4'>
+              <CodCard />
             </div>
           )}
         </div>

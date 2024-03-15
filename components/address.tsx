@@ -8,10 +8,18 @@ import { setCurrentStep } from '@/global/cartSlice';
 import { RootState } from '@/global/store';
 import AddressCard from './address-card';
 import AddressForm from './address-form';
+import toast from 'react-hot-toast';
 
 const Address = () => {
   const dispatch = useDispatch();
-  const address = useSelector((state: RootState) => state.cart.address);
+  const { address, summary } = useSelector((state: RootState) => state.cart);
+
+  const handleProceed = () => {
+    if (summary.total === 0) {
+      return toast.error('Please add some item to cart.');
+    }
+    dispatch(setCurrentStep(3));
+  };
 
   return (
     <div className='bg-white p-6 border'>
@@ -24,7 +32,7 @@ const Address = () => {
           <AddressCard address={address} isDelete={true} />
 
           <Button
-            onClick={() => dispatch(setCurrentStep(3))}
+            onClick={handleProceed}
             className='w-full lg:w-1/3 flex items-center justify-between mt-5'
           >
             Click to Payment <ArrowBigRightDash className='h-5 w-5' />
