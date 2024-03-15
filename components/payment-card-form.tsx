@@ -70,7 +70,7 @@ const CardPaymentForm = ({
         try {
           const { data: statusData } = await checkStatus(data.orderId!);
           if (statusData.data[0].payment_status === 'NOT_ATTEMPTED') {
-            setTimeout(pollStatus, 5000);
+            setTimeout(pollStatus, 2000);
             dispatch(setOrderStatus('pending'));
           } else if (statusData.data[0].payment_status === 'SUCCESS') {
             dispatch(setOrderStatus('success'));

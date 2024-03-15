@@ -63,7 +63,7 @@ const UPIPayment = () => {
           const { data: statusData } = await checkStatus(data.orderId!);
           if (statusData.data[0].payment_status === 'NOT_ATTEMPTED') {
             dispatch(setOrderStatus('pending'));
-            setTimeout(pollStatus, 5000);
+            setTimeout(pollStatus, 2000);
           } else if (statusData.data[0].payment_status === 'SUCCESS') {
             setLoading(true);
             dispatch(setOrderStatus('success'));
