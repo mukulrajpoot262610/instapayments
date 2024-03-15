@@ -71,6 +71,26 @@ Technologies used in the project:
 | Mukul       | 5409162669381034  | 03/28       | 123     | Master Card |
 | Mukul       | 6074825972083818  | 03/28       | 123     | RuPay       |
 
+## Screenshots
+
+### Delivery
+
+| | |
+|:-------------------------:|:-------------------------:|
+| ![Screenshot 2024-03-15 at 2 14 50 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/b48041b3-eeb3-4754-a3c0-b5daa269bace) | ![Screenshot 2024-03-15 at 2 14 59 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/72cdf272-fce8-4bd4-8115-44232b184630) |
+
+### Payment
+|||
+|:-------------------------:|:-------------------------:|
+| ![Screenshot 2024-03-15 at 2 15 04 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/30368700-50a3-4a67-b2ff-c9138709f56a) | ![Screenshot 2024-03-15 at 2 15 12 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/50c89d92-9d7c-4315-a75a-36a79c132d4e)
+| ![Screenshot 2024-03-15 at 2 15 17 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/bc30a7bf-4eda-483b-a614-86861c090dd2) | ![Screenshot 2024-03-15 at 2 15 20 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/43606ac6-9899-4add-9e3c-d25ce1583c76)
+| ![Screenshot 2024-03-15 at 2 15 25 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/b6237cbe-10f4-4475-bced-78fb62ebafb2) | ![Screenshot 2024-03-15 at 2 15 29 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/cdb12324-8b79-4b16-a22c-66a43caa9ab2)
+ 
+### Order Complete
+|||
+|:-------------------------:|:-------------------------:|
+| ![Screenshot 2024-03-15 at 2 23 44 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/67b90d16-0fd4-40aa-b55c-bf91a6868f9f) | ![Screenshot 2024-03-15 at 2 15 47 PM](https://github.com/mukulrajpoot262610/instapayments/assets/73209159/deec4d48-242d-43f5-aa69-d94429d7d886)
+
 
 ## Deployment
 
