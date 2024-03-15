@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-sync-scripts */
 'use client';
 
 import { Inter } from 'next/font/google';

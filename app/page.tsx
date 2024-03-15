@@ -2,14 +2,14 @@
 
 import Address from '@/components/address';
 import OrderDetails from '@/components/order-detail';
-import { CreditCard, ShoppingCartIcon, TruckIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPaymentMethods, setProducts, setSummary } from '@/global/cartSlice';
 import { RootState } from '@/global/store';
 import Payment from '@/components/payment';
 import { Product } from '@/types/cart';
 import OrderConfirmation from '@/components/order-confirmation';
+import axios from 'axios';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -20,18 +20,12 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          'https://groww-intern-assignment.vercel.app/v1/api/order-details',
-          {
-            method: 'GET',
-            headers: {
-              ContentType: 'application/json',
-            },
-          }
+        const response = await axios.get(
+          'https://groww-intern-assignment.vercel.app/v1/api/order-details'
         );
 
         const data: { paymentMethods: string[]; products: Product[] } =
-          await response.json();
+          await response.data;
 
         dispatch(setPaymentMethods(data.paymentMethods));
         dispatch(setProducts(data.products));

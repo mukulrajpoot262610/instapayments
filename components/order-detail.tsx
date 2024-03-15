@@ -2,7 +2,7 @@ import React from 'react';
 import ItemCard from './item-card';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/global/store';
-import { PartyPopper } from 'lucide-react';
+import Discount from './common/discount';
 
 const OrderDetails = () => {
   const { cartItems: products, summary } = useSelector(
@@ -38,15 +38,11 @@ const OrderDetails = () => {
         </div>
       </div>
 
-      <div className='p-4 bg-green-50 text-green-700 border border-green-500 flex items-center gap-1 mt-2 text-xs'>
-        <PartyPopper className='h-4 w-4 mr-1' />
-        Discount of <span className='font-bold'>10% Applied</span> for new
-        users.
-      </div>
+      <Discount discount={10} />
 
       <hr className='my-5' />
 
-      <div className='hidden lg:flex flex-col gap-3'>
+      <div className='flex flex-col gap-3'>
         {products.map((product) => (
           <ItemCard
             key={product.id}

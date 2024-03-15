@@ -17,8 +17,8 @@ const OrderConfirmation = () => {
 
       <p>
         We received your order{' '}
-        <span className='underline font-semibold'>{order.order_id}</span> and it
-        is in process.
+        <span className='underline font-semibold'>{order[0].order_id}</span> and
+        it is in process.
       </p>
 
       <p className='mt-3'>
@@ -67,6 +67,18 @@ const OrderConfirmation = () => {
                   className='h-auto w-16 mr-1'
                 />
               </div>
+            </div>
+          )}
+          {selectedMethod === 'upi' && (
+            <div className='flex items-center justify-between border border-black p-4'>
+              UPI
+              <Image
+                src='/upi.svg'
+                height={100}
+                width={100}
+                alt='UPI'
+                className='h-auto w-16 mr-1'
+              />
             </div>
           )}
         </div>

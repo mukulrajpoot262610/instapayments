@@ -1,10 +1,10 @@
 import React from 'react';
 import { z } from 'zod';
-import { FormSchema } from './address';
 import { Button } from './ui/button';
 import { Trash2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { deleteAddress } from '@/global/cartSlice';
+import { FormSchema } from '@/schema/address-form';
 
 interface AddressCardProps {
   address: z.infer<typeof FormSchema>;

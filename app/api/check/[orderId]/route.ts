@@ -34,13 +34,11 @@ export async function POST(req: Request) {
     };
 
     const { data } = await axios.get(
-      `${NEXT_PUBLIC_CF_BASE_ENDPOINT}/pg/orders/${id}`,
+      `${NEXT_PUBLIC_CF_BASE_ENDPOINT}/pg/orders/${id}/payments`,
       {
         headers,
       }
     );
-
-    console.log(data);
     return NextResponse.json({ data });
   } catch (err) {
     console.log(err);

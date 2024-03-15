@@ -81,13 +81,19 @@ const CardPayment = () => {
         try {
           const { data: statusData } = await checkStatus(data.orderId!);
           console.log(statusData);
-          if (statusData.data.order_status !== 'PAID') {
+          if (statusData.data[0].payment_status === 'NOT_ATTEMPTED') {
             setTimeout(pollStatus, 5000);
-          } else {
+          } else if (statusData.data[0].payment_status === 'SUCCESS') {
             dispatch(setOrderStatus('success'));
             setLoading(false);
             dispatch(setCurrentStep(4));
             dispatch(setOrder(statusData.data));
+          } else {
+            setLoading(false);
+
+            toast.error(
+              `${statusData.data[0].error_details.error_description}. Try Again.`
+            );
           }
         } catch (err) {
           console.log('Error while polling status:', err);

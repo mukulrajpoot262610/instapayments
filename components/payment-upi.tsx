@@ -4,15 +4,17 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/global/store';
 import { Button } from './ui/button';
 import { checkStatus, getSession, makePayment } from '@/services/api-service';
 import { PaymentApiPayload } from '@/types/cashfree';
 import { Loader, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { setCurrentStep, setOrder, setOrderStatus } from '@/global/cartSlice';
 
 const UPIPayment = () => {
+  const dispatch = useDispatch();
   const { selectedMethod, address, summary } = useSelector(
     (state: RootState) => state.cart
   );
@@ -46,18 +48,43 @@ const UPIPayment = () => {
       };
 
       const { data: paymentData } = await makePayment(payload);
+
       if (channel !== 'collect') {
+        setLoading(false);
         setQr(paymentData.data.data.payload.qrcode);
       }
 
-      const { data: status } = await checkStatus(data.orderId);
-      console.log(status);
+      const pollStatus = async () => {
+        try {
+          const { data: statusData } = await checkStatus(data.orderId!);
+          console.log(statusData);
+          if (statusData.data[0].payment_status === 'NOT_ATTEMPTED') {
+            setTimeout(pollStatus, 5000);
+          } else if (statusData.data[0].payment_status === 'SUCCESS') {
+            dispatch(setOrderStatus('success'));
+            setLoading(false);
+            dispatch(setCurrentStep(4));
+            dispatch(setOrder(statusData.data));
+          } else {
+            setLoading(false);
+            toast.error(
+              `${statusData.data[0].error_details.error_description}. Try Again.`
+            );
+          }
+        } catch (err) {
+          console.log('Error while polling status:', err);
+        }
+      };
+
+      setTimeout(pollStatus, 5000);
     } catch (err) {
       console.log(err);
-    } finally {
+      toast.error('Internal Server Error');
       setLoading(false);
     }
   };
+
+  console.log(qr);
 
   return (
     <div className='p-4'>
@@ -136,7 +163,7 @@ const UPIPayment = () => {
                   )}
                 </>
               ) : (
-                <Loader className='animate-spin' />
+                <Loader className='animate-spin mb-10' />
               )}
             </TabsContent>
           </Tabs>
