@@ -46,3 +46,22 @@ Technologies used in the project:
 *   Shadcn UI
 *   Cashfree Payments
 *   Vercel
+
+<h2>Data for Testing</h2>
+
+### UPI VPA ( Virtual Payment Address )
+
+- `testsuccess@gocash` for Success Simulation 
+- `testfailure@gocash` for Failure Simulation
+
+### UPI QR 
+
+- Scan QR code and simulate accordingly.
+
+### CARDS
+
+| Name        | Card Number       | Expiry Date | CVV/CVC | Scheme      |
+| ----------- | ----------------- | ----------- | ------- | ----------- |
+| Mukul       | 4706131211212123  | 03/28       | 123     | Visa        |
+| Mukul       | 5409162669381034  | 03/28       | 123     | Master Card |
+| Mukul       | 6074825972083818  | 03/28       | 123     | RuPay |
