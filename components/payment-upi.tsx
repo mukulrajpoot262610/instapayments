@@ -11,10 +11,11 @@ import { setCurrentStep, setOrder, setOrderStatus } from '@/global/cartSlice';
 import UpiCard from './common/upi-card';
 import UpiPaymentVpa from './payment-upi-vpa';
 import UpiPaymentQr from './payment-upi-qr';
+import Image from 'next/image';
 
 const UPIPayment = () => {
   const dispatch = useDispatch();
-  const { selectedMethod, address, summary } = useSelector(
+  const { selectedMethod, address, summary, orderStatus } = useSelector(
     (state: RootState) => state.cart
   );
 
@@ -37,6 +38,7 @@ const UPIPayment = () => {
     }
 
     setLoading(true);
+    dispatch(setOrderStatus('pending'));
 
     try {
       const { data } = await getSession({
@@ -59,16 +61,18 @@ const UPIPayment = () => {
       const pollStatus = async () => {
         try {
           const { data: statusData } = await checkStatus(data.orderId!);
-          console.log(statusData);
           if (statusData.data[0].payment_status === 'NOT_ATTEMPTED') {
+            dispatch(setOrderStatus('pending'));
             setTimeout(pollStatus, 5000);
           } else if (statusData.data[0].payment_status === 'SUCCESS') {
+            setLoading(true);
             dispatch(setOrderStatus('success'));
-            setLoading(false);
-            dispatch(setCurrentStep(4));
+            setTimeout(() => dispatch(setCurrentStep(4)), 3000);
             dispatch(setOrder(statusData.data));
           } else {
-            setLoading(false);
+            setLoading(true);
+            dispatch(setOrderStatus('failure'));
+            setTimeout(() => setLoading(false), 3000);
             setQr('');
             toast.error(
               `${statusData.data[0].error_details.error_description}`
@@ -90,16 +94,36 @@ const UPIPayment = () => {
   return (
     <div className='relative'>
       {loading && (
-        <div className='h-full w-full absolute top-0 left-0 bg-black/[0.8] text-white flex flex-col items-center justify-center z-50'>
-          <Loader2 className='animate-spin' />
-          <p className='mt-2 font-normal'>Waiting for Payment</p>
-          <p className='text-xs font-normal'>
-            Please do not refresh or press back.
-          </p>
-          <p className='mt-4'>
-            Waiting: {Math.floor(timeLeft / 60)}:
-            {(timeLeft % 60).toString().padStart(2, '0')}
-          </p>
+        <div className='h-screen w-full fixed top-0 left-0 bg-black/[0.8] text-white flex flex-col items-center justify-center z-50'>
+          {orderStatus === 'failure' ? (
+            <>
+              <Image src='/failure.gif' height={200} width={200} alt='' />
+              <p className='mt-2 font-normal'>Payment Failed</p>
+              <p className='text-xs font-normal'>
+                Please try again in some time.
+              </p>
+            </>
+          ) : orderStatus === 'success' ? (
+            <>
+              <Image src='/success.gif' height={200} width={200} alt='' />
+              <p className='mt-2 font-normal'>Payment Success</p>
+              <p className='text-xs font-normal flex items-center gap-2'>
+                redirecting <Loader2 className='h-3 w-3 animate-spin' />
+              </p>
+            </>
+          ) : (
+            <>
+              <Loader2 className='animate-spin' />
+              <p className='mt-2 font-normal'>Waiting for Payment</p>
+              <p className='text-xs font-normal'>
+                Please do not refresh or press back.
+              </p>
+              <p className='mt-4'>
+                Waiting: {Math.floor(timeLeft / 60)}:
+                {(timeLeft % 60).toString().padStart(2, '0')}
+              </p>
+            </>
+          )}
         </div>
       )}
 

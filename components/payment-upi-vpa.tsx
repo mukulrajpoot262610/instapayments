@@ -51,13 +51,13 @@ const UpiPaymentVpa = ({
           const { data: statusData } = await checkStatus(data.orderId!);
           if (statusData.data[0].payment_status === 'NOT_ATTEMPTED') {
             setTimeout(pollStatus, 5000);
+            dispatch(setOrderStatus('pending'));
           } else if (statusData.data[0].payment_status === 'SUCCESS') {
             dispatch(setOrderStatus('success'));
-            setLoading(false);
-            dispatch(setCurrentStep(4));
+            setTimeout(() => dispatch(setCurrentStep(4)), 3000);
             dispatch(setOrder(statusData.data));
           } else {
-            setLoading(false);
+            dispatch(setOrderStatus('failure'));
             toast.error(
               `${statusData.data[0].error_details.error_description}`
             );
