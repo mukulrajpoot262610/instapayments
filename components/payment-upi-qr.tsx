@@ -1,10 +1,21 @@
 import { Loader, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
+import { Button } from './ui/button';
 
-const UpiPaymentQr = ({ qr, loading }: { qr: string; loading: boolean }) => {
+const UpiPaymentQr = ({
+  qr,
+  loading,
+  handlePayment,
+}: {
+  qr: string;
+  loading: boolean;
+  handlePayment: (value: string) => void;
+}) => {
+  console.log(loading, qr);
+
   return (
-    <div>
+    <div className='flex items-center flex-col justify-center'>
       <Image
         src='/upi.svg'
         height={100}
@@ -28,6 +39,11 @@ const UpiPaymentQr = ({ qr, loading }: { qr: string; loading: boolean }) => {
         </>
       ) : (
         <Loader className='animate-spin mb-10' />
+      )}
+      {!loading && qr === '' && (
+        <Button className='mb-10' onClick={() => handlePayment('qrcode')}>
+          Try Again
+        </Button>
       )}
     </div>
   );

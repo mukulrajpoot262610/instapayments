@@ -1,15 +1,11 @@
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/global/store';
-import { Button } from './ui/button';
 import { checkStatus, getSession, makePayment } from '@/services/api-service';
 import { PaymentApiPayload } from '@/types/cashfree';
-import { Loader, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { setCurrentStep, setOrder, setOrderStatus } from '@/global/cartSlice';
 import UpiCard from './common/upi-card';
@@ -22,7 +18,6 @@ const UPIPayment = () => {
     (state: RootState) => state.cart
   );
 
-  const [upiId, setUpiId] = useState<string>('');
   const [qr, setQr] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState(300);
@@ -40,9 +35,6 @@ const UPIPayment = () => {
     if (!address) {
       return;
     }
-    if (channel === 'collect' && !upiId) {
-      return toast.error('Please enter a valid UPI Id.');
-    }
 
     setLoading(true);
 
@@ -55,17 +47,14 @@ const UPIPayment = () => {
 
       const payload: PaymentApiPayload = {
         payment_session_id: data.paymentSessionId,
-        upi_id: upiId,
         channel,
         method: 'upi',
       };
 
       const { data: paymentData } = await makePayment(payload);
 
-      if (channel !== 'collect') {
-        setLoading(false);
-        setQr(paymentData.data.data.payload.qrcode);
-      }
+      setLoading(false);
+      setQr(paymentData.data.data.payload.qrcode);
 
       const pollStatus = async () => {
         try {
@@ -80,8 +69,9 @@ const UPIPayment = () => {
             dispatch(setOrder(statusData.data));
           } else {
             setLoading(false);
+            setQr('');
             toast.error(
-              `${statusData.data[0].error_details.error_description}. Try Again.`
+              `${statusData.data[0].error_details.error_description}`
             );
           }
         } catch (err) {
@@ -123,12 +113,17 @@ const UPIPayment = () => {
             </p>
             <Tabs defaultValue='vpa'>
               <TabsList className='w-full'>
-                <TabsTrigger className='w-1/2' value='vpa'>
+                <TabsTrigger
+                  className='w-1/2'
+                  value='vpa'
+                  disabled={loading && !qr}
+                >
                   VPA
                 </TabsTrigger>
                 <TabsTrigger
                   className='w-1/2'
                   value='qr'
+                  disabled={loading}
                   onClick={() => handlePayment('qrcode')}
                 >
                   QR Code
@@ -143,7 +138,11 @@ const UPIPayment = () => {
                 value='qr'
                 className='flex items-center flex-col justify-center border rounded-lg'
               >
-                <UpiPaymentQr loading={loading} qr={qr} />
+                <UpiPaymentQr
+                  loading={loading}
+                  qr={qr}
+                  handlePayment={handlePayment}
+                />
               </TabsContent>
             </Tabs>
           </div>
